@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="MCMod Manager icon">
+  <defs>
+    <linearGradient id="bg" x1="32" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#14251b"/>
+      <stop offset="1" stop-color="#07100c"/>
+    </linearGradient>
+    <linearGradient id="cube" x1="72" y1="56" x2="184" y2="198" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8dffbd"/>
+      <stop offset="1" stop-color="#159a5e"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <path d="M128 34 205 78v88l-77 45-77-45V78l77-44Z" fill="#0c1711" stroke="#68f0a9" stroke-width="8" stroke-linejoin="round"/>
+  <path d="m128 34 77 44-77 44-77-44 77-44Z" fill="url(#cube)" opacity=".95"/>
+  <path d="m51 78 77 44v89l-77-45V78Z" fill="#1f7f55"/>
+  <path d="m205 78-77 44v89l77-45V78Z" fill="#11543a"/>
+  <path d="M84 105h88v56H84v-56Z" fill="#07100c" opacity=".9"/>
+  <path d="M101 126h54M101 144h36" stroke="#68f0a9" stroke-width="10" stroke-linecap="round"/>
+  <path d="M76 198h104" stroke="#68f0a9" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+</svg>

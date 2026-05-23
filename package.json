@@ -1,0 +1,66 @@
+{
+  "name": "mcmod-manager",
+  "version": "0.1.0",
+  "description": "Desktop app for managing Minecraft mods.",
+  "main": "dist-electron/electron/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && tsc -p tsconfig.electron.json && node scripts/start-electron.cjs\"",
+    "build": "npm run icon && tsc -p tsconfig.json && vite build && tsc -p tsconfig.electron.json",
+    "icon": "node scripts/generate-icon.cjs",
+    "dist:win": "npm run build && electron-builder --win portable",
+    "cert:self": "powershell -ExecutionPolicy Bypass -File scripts/create-self-signed-cert.ps1",
+    "sign:exe": "powershell -ExecutionPolicy Bypass -File scripts/sign-exe.ps1",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.electron.json --noEmit"
+  },
+  "build": {
+    "appId": "com.mcmodmanager.app",
+    "productName": "MCMod Manager",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "MCMod-Manager-${version}.exe"
+    }
+  },
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "@vitejs/plugin-react": "^4.2.1",
+    "adm-zip": "^0.5.17",
+    "electron-store": "^8.2.0",
+    "lucide-react": "^0.468.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^26.8.1",
+    "png-to-ico": "^3.0.1",
+    "postcss": "^8.4.32",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "wait-on": "^7.2.0"
+  }
+}

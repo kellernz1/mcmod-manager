@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+:root,
+.theme-dark {
+  --terminal-bg: 10 15 13;
+  --terminal-panel: 17 24 20;
+  --terminal-panel2: 23 33 28;
+  --terminal-line: 38 56 47;
+  --terminal-glow: 104 240 169;
+  --terminal-text: 229 246 236;
+  --terminal-muted: 148 168 155;
+  --terminal-sidebar: 0 0 0;
+  color-scheme: dark;
+}
+
+.theme-light {
+  --terminal-bg: 244 247 242;
+  --terminal-panel: 255 255 255;
+  --terminal-panel2: 234 241 236;
+  --terminal-line: 192 208 197;
+  --terminal-glow: 21 154 94;
+  --terminal-text: 20 32 26;
+  --terminal-muted: 87 106 94;
+  --terminal-sidebar: 225 235 228;
+  color-scheme: light;
+}
