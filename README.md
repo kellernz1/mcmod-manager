@@ -6,7 +6,7 @@ Desktop app built with Electron, React 18, TypeScript, Tailwind CSS, and Zustand
 
 Download the Windows executable here:
 
-https://www.mediafire.com/file/vdoxkdi7b26zneh/MCMod-Manager-0.1.0.exe/file
+https://www.mediafire.com/file/13nnncaopd1d9co/MCMod-Manager-Setup-0.1.0.exe/file
 
 ## Screenshots
 
