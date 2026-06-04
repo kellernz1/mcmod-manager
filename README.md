@@ -22,6 +22,18 @@ https://www.mediafire.com/file/vdoxkdi7b26zneh/MCMod-Manager-0.1.0.exe/file
 
 ![Mod Browser](docs/screenshots/mods.png)
 
+### Modpacks
+
+![Modpacks](docs/screenshots/modpacks.png)
+
+### Resource Packs
+
+![Resource Packs](docs/screenshots/resourcepacks.png)
+
+### Shaders
+
+![Shaders](docs/screenshots/shaders.png)
+
 ### Conflict Center
 
 ![Conflict Center](docs/screenshots/conflicts.png)
