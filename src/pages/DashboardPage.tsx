@@ -6,7 +6,7 @@ import { detectConflicts } from "../services/conflictDetector";
 import { useModStore } from "../store/useModStore";
 import { useProfileStore } from "../store/useProfileStore";
 
-type Page = "dashboard" | "profiles" | "mods" | "conflicts" | "settings";
+type Page = "dashboard" | "profiles" | "mods" | "modpacks" | "resources" | "shaders" | "conflicts" | "settings";
 
 export function DashboardPage({ goTo }: { goTo: Dispatch<SetStateAction<Page>> }) {
   const { language, t } = useI18n();

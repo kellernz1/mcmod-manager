@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Boxes, FolderKanban, Gauge, Settings, Search } from "lucide-react";
+import { AlertTriangle, Boxes, FolderKanban, Gauge, Image, PackageOpen, Settings, Sparkles, Search } from "lucide-react";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ModBrowserPage } from "./pages/ModBrowserPage";
+import { ModpacksPage } from "./pages/ModpacksPage";
+import { ResourcePacksPage } from "./pages/ResourcePacksPage";
+import { ShaderPacksPage } from "./pages/ShaderPacksPage";
 import { ConflictCenterPage } from "./pages/ConflictCenterPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { useProfileStore } from "./store/useProfileStore";
@@ -10,12 +13,15 @@ import { useModStore } from "./store/useModStore";
 import { useSettingsStore } from "./store/useSettingsStore";
 import { useI18n } from "./i18n";
 
-type Page = "dashboard" | "profiles" | "mods" | "conflicts" | "settings";
+type Page = "dashboard" | "profiles" | "mods" | "modpacks" | "resources" | "shaders" | "conflicts" | "settings";
 
-const navItems: Array<{ id: Page; labelKey: "navDashboard" | "navProfiles" | "navMods" | "navConflicts" | "navSettings"; icon: typeof Gauge }> = [
+const navItems: Array<{ id: Page; labelKey: "navDashboard" | "navProfiles" | "navMods" | "navModpacks" | "navResources" | "navShaders" | "navConflicts" | "navSettings"; icon: typeof Gauge }> = [
   { id: "dashboard", labelKey: "navDashboard", icon: Gauge },
   { id: "profiles", labelKey: "navProfiles", icon: FolderKanban },
   { id: "mods", labelKey: "navMods", icon: Search },
+  { id: "modpacks", labelKey: "navModpacks", icon: PackageOpen },
+  { id: "resources", labelKey: "navResources", icon: Image },
+  { id: "shaders", labelKey: "navShaders", icon: Sparkles },
   { id: "conflicts", labelKey: "navConflicts", icon: AlertTriangle },
   { id: "settings", labelKey: "navSettings", icon: Settings },
 ];
@@ -64,6 +70,9 @@ export default function App() {
     dashboard: <DashboardPage goTo={setPage} />,
     profiles: <ProfilePage />,
     mods: <ModBrowserPage />,
+    modpacks: <ModpacksPage />,
+    resources: <ResourcePacksPage />,
+    shaders: <ShaderPacksPage />,
     conflicts: <ConflictCenterPage />,
     settings: <SettingsPage />,
   }[page];

@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BrowserModCard, InstalledModCard } from "../components/ModCard";
 import { VersionSelector } from "../components/VersionSelector";
 import { useI18n } from "../i18n";
-import { installModrinthProject } from "../services/modInstaller";
+import { installModrinthProjectWithDependencies } from "../services/modInstaller";
 import { searchMods } from "../services/modrinthApi";
 import { modLoaders } from "../services/profileService";
 import { useModStore } from "../store/useModStore";
@@ -19,7 +19,7 @@ function joinPath(base: string, file: string) {
 export function ModBrowserPage() {
   const { t } = useI18n();
   const { profiles, activeProfileId } = useProfileStore();
-  const { modsByProfile, addMod, syncFromDisk } = useModStore();
+  const { modsByProfile, setMods, syncFromDisk } = useModStore();
   const activeProfile = useMemo(() => profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0], [profiles, activeProfileId]);
   const installed = activeProfile ? modsByProfile[activeProfile.id] ?? [] : [];
   const [query, setQuery] = useState("");
@@ -28,25 +28,55 @@ export function ModBrowserPage() {
   const [results, setResults] = useState<ModrinthSearchResult[]>([]);
   const [installing, setInstalling] = useState<string | null>(null);
   const [status, setStatus] = useState("");
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  async function runSearch() {
+  async function runSearch(searchQuery = query, sortIndex = query.trim() ? "relevance" : "downloads", nextOffset = 0, append = false) {
+    if (loading) return;
+    setLoading(true);
     setStatus(t.searchingModrinth);
-    const hits = await searchMods(query, loader, version);
-    setResults(hits);
-    setStatus(`${hits.length} ${t.resultsFound}`);
+    try {
+      const hits = await searchMods(searchQuery, loader, version, sortIndex, nextOffset);
+      setResults((current) => (append ? [...current, ...hits] : hits));
+      setOffset(nextOffset + hits.length);
+      setHasMore(hits.length === 24);
+      setStatus(`${append ? results.length + hits.length : hits.length} ${t.resultsFound}`);
+    } finally {
+      setLoading(false);
+    }
   }
+
+  useEffect(() => {
+    void runSearch("", "downloads");
+  }, [loader, version]);
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting && hasMore && !loading) {
+        void runSearch(query, query.trim() ? "relevance" : "downloads", offset, true);
+      }
+    }, { rootMargin: "320px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loading, offset, query, loader, version]);
 
   async function install(result: ModrinthSearchResult) {
     if (!activeProfile) return;
     setInstalling(result.project_id);
     try {
-      const mod = await installModrinthProject(result.project_id, { ...activeProfile, loader, minecraftVersion: version });
-      await addMod(activeProfile.id, { ...mod, name: result.title });
+      const installedMods = await installModrinthProjectWithDependencies(result.project_id, { ...activeProfile, loader, minecraftVersion: version }, installed);
+      const renamedMods = installedMods.map((mod) => (mod.id === result.project_id ? { ...mod, name: result.title } : mod));
+      const nextMods = [...renamedMods, ...installed.filter((mod) => !renamedMods.some((installedMod) => installedMod.id === mod.id))];
+      await setMods(activeProfile.id, nextMods);
       await syncFromDisk(activeProfile.id, activeProfile.modsPath, {
         minecraftVersion: activeProfile.minecraftVersion,
         loader: activeProfile.loader,
       });
-      setStatus(`${result.title} ${t.installedStatus}`);
+      setStatus(`${result.title} ${t.installedStatus} ${renamedMods.length > 1 ? `${renamedMods.length - 1} ${t.dependenciesInstalled}` : ""}`);
     } finally {
       setInstalling(null);
     }
@@ -86,7 +116,7 @@ export function ModBrowserPage() {
             {modLoaders.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
           <VersionSelector value={version} onChange={setVersion} />
-          <button onClick={runSearch} className="rounded bg-terminal-glow px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300">{t.search}</button>
+          <button onClick={() => runSearch()} className="rounded bg-terminal-glow px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300">{t.search}</button>
         </div>
         {status && <p className="mt-3 text-sm text-terminal-muted">{status}</p>}
       </section>
@@ -96,6 +126,9 @@ export function ModBrowserPage() {
           {results.map((result) => (
             <BrowserModCard key={result.project_id} result={result} installing={installing === result.project_id} onInstall={() => install(result)} />
           ))}
+          <div ref={loadMoreRef} className="py-3 text-center text-sm text-terminal-muted">
+            {loading ? t.loadingMore : hasMore ? "" : t.noMoreResults}
+          </div>
         </section>
         <section className="space-y-3">
           <h3 className="text-lg font-semibold">{t.installed}</h3>

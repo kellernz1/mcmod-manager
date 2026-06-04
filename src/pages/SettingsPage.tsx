@@ -12,7 +12,16 @@ type LauncherInfo = {
 
 export function SettingsPage() {
   const { t } = useI18n();
-  const { theme, language, javaPath, automaticBackup, setTheme, setLanguage, setJavaPath, setAutomaticBackup } = useSettingsStore();
+  const {
+    theme,
+    language,
+    javaPath,
+    automaticBackup,
+    setTheme,
+    setLanguage,
+    setJavaPath,
+    setAutomaticBackup,
+  } = useSettingsStore();
   const [launchers, setLaunchers] = useState<LauncherInfo[]>([]);
 
   useEffect(() => {

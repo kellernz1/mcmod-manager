@@ -20,11 +20,13 @@ type ModrinthVersion = {
   }>;
 };
 
-export async function searchMods(query: string, loader: ModLoader, gameVersion: string): Promise<ModrinthSearchResult[]> {
+export async function searchMods(query: string, loader: ModLoader, gameVersion: string, index = "relevance", offset = 0): Promise<ModrinthSearchResult[]> {
   const facets = JSON.stringify([[`categories:${loader}`], [`versions:${gameVersion}`]]);
   const params = new URLSearchParams({
     query,
     facets,
+    index,
+    offset: String(offset),
     limit: "24",
   });
   const response = await fetch(`${API_BASE}/search?${params.toString()}`);

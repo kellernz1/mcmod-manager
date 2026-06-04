@@ -1,6 +1,14 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type { Profile } from "../src/types/Profile.js";
 import type { Mod } from "../src/types/Mod.js";
+import type { ModpackProvider } from "../src/types/Modpack.js";
+
+type InstallModpackOptions = {
+  provider: ModpackProvider;
+  url?: string;
+  filename?: string;
+  modsPath: string;
+};
 
 contextBridge.exposeInMainWorld("modforge", {
   readMods: (modsPath: string) => ipcRenderer.invoke("fs:readMods", modsPath),
@@ -15,6 +23,7 @@ contextBridge.exposeInMainWorld("modforge", {
   deleteProfile: (profileId: string) => ipcRenderer.invoke("profile:delete", profileId),
   installDownloadedMod: (url: string, filename: string, modsPath: string) =>
     ipcRenderer.invoke("mods:installDownloaded", url, filename, modsPath),
+  installModpackArchive: (options: InstallModpackOptions) => ipcRenderer.invoke("mods:installModpackArchive", options),
   saveMods: (profileId: string, mods: Mod[]) => ipcRenderer.invoke("mods:save", profileId, mods),
   getMods: (profileId: string) => ipcRenderer.invoke("mods:get", profileId),
 });
